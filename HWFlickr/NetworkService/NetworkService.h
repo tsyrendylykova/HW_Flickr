@@ -8,10 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "NetworkServiceProtocol.h"
-#import "ImagesModel.h"
 #import "ViewController.h"
 
-@class ImagesModel;
+@class ViewController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<NetworkServiceOutputProtocol> output; /**< Делегат внешних событий */
 @property (nonatomic, strong) ViewController *viewController;
-@property (nonatomic, strong) ImagesModel *model;
-@property (nonatomic, strong) NSMutableArray<ImagesModel *> *photosArray;
 
 -(void)findFlickrPhotoWithSearchString: (NSString *)searchString;
 

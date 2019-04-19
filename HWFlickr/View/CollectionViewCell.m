@@ -17,15 +17,17 @@
 -(instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, CGRectGetHeight(frame) - 20, 25)];
-//        label.backgroundColor = [UIColor yellowColor];
-        _titleLabel = label;
+//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, CGRectGetHeight(frame) - 20, 25)];
+////        label.backgroundColor = [UIColor yellowColor];
+//        _titleLabel = label;
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, CGRectGetWidth(frame) - 20, CGRectGetHeight(frame) - 40)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, CGRectGetWidth(frame) - 10, CGRectGetHeight(frame) - 10)];
         _coverImageView = imageView;
+        _coverImageView.layer.cornerRadius = 10;
+        _coverImageView.layer.masksToBounds = YES;
         
         [self.contentView addSubview:_coverImageView];
-        [self.contentView addSubview:_titleLabel];
+//        [self.contentView addSubview:_titleLabel];
     }
     return self;
 }

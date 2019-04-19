@@ -16,8 +16,9 @@
 		9571FC03226730FF00602FB4 /* CollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9571FC02226730FF00602FB4 /* CollectionViewCell.m */; };
 		9571FC062267A8EB00602FB4 /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 9571FC052267A8EB00602FB4 /* NetworkService.m */; };
 		9571FC092267AB8500602FB4 /* NetworkHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9571FC082267AB8500602FB4 /* NetworkHelper.m */; };
-		9571FC0D22687E7400602FB4 /* ImagesModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9571FC0C22687E7400602FB4 /* ImagesModel.m */; };
 		9571FC3A2269AC9700602FB4 /* HWEditPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9571FC392269AC9700602FB4 /* HWEditPhotoViewController.m */; };
+		9571FC402269EF3F00602FB4 /* dog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9571FC3F2269EF3F00602FB4 /* dog.jpg */; };
+		9571FC422269EF8900602FB4 /* cat.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9571FC412269EF8900602FB4 /* cat.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,10 +39,10 @@
 		9571FC072267AB8500602FB4 /* NetworkHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkHelper.h; sourceTree = "<group>"; };
 		9571FC082267AB8500602FB4 /* NetworkHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkHelper.m; sourceTree = "<group>"; };
 		9571FC0A2267BC4E00602FB4 /* NetworkServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkServiceProtocol.h; sourceTree = "<group>"; };
-		9571FC0B22687E7400602FB4 /* ImagesModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesModel.h; sourceTree = "<group>"; };
-		9571FC0C22687E7400602FB4 /* ImagesModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagesModel.m; sourceTree = "<group>"; };
 		9571FC382269AC9700602FB4 /* HWEditPhotoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HWEditPhotoViewController.h; sourceTree = "<group>"; };
 		9571FC392269AC9700602FB4 /* HWEditPhotoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HWEditPhotoViewController.m; sourceTree = "<group>"; };
+		9571FC3F2269EF3F00602FB4 /* dog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dog.jpg; sourceTree = "<group>"; };
+		9571FC412269EF8900602FB4 /* cat.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +86,7 @@
 				956931032264A83A00C8FDB8 /* LaunchScreen.storyboard */,
 				956931062264A83A00C8FDB8 /* Info.plist */,
 				956931072264A83A00C8FDB8 /* main.m */,
+				9571FC3E2269EEF500602FB4 /* pushImages */,
 			);
 			path = HWFlickr;
 			sourceTree = "<group>";
@@ -92,8 +94,6 @@
 		9571FC0E22687E7F00602FB4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				9571FC0B22687E7400602FB4 /* ImagesModel.h */,
-				9571FC0C22687E7400602FB4 /* ImagesModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -128,6 +128,15 @@
 				9571FC392269AC9700602FB4 /* HWEditPhotoViewController.m */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		9571FC3E2269EEF500602FB4 /* pushImages */ = {
+			isa = PBXGroup;
+			children = (
+				9571FC3F2269EF3F00602FB4 /* dog.jpg */,
+				9571FC412269EF8900602FB4 /* cat.jpg */,
+			);
+			path = pushImages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,6 +199,8 @@
 				956931052264A83A00C8FDB8 /* LaunchScreen.storyboard in Resources */,
 				956931022264A83A00C8FDB8 /* Assets.xcassets in Resources */,
 				956931002264A83800C8FDB8 /* Main.storyboard in Resources */,
+				9571FC422269EF8900602FB4 /* cat.jpg in Resources */,
+				9571FC402269EF3F00602FB4 /* dog.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +211,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9571FC0D22687E7400602FB4 /* ImagesModel.m in Sources */,
 				956930FD2264A83800C8FDB8 /* ViewController.m in Sources */,
 				956931082264A83A00C8FDB8 /* main.m in Sources */,
 				9571FC092267AB8500602FB4 /* NetworkHelper.m in Sources */,
