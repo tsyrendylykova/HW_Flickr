@@ -16,8 +16,7 @@
 
 typedef NS_ENUM(NSInteger, LCTTriggerType) {
     LCTTriggerTypeInterval = 0,
-    LCTTriggerTypeDate = 1,
-    LCTTriggerTypeLocation = 2
+    LCTTriggerTypeDate = 1
 };
 
 @interface ViewController () <NetworkServiceOutputProtocol>
@@ -31,6 +30,14 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 
 @implementation ViewController
 
+- (instancetype)initWithSearchString: (NSString *)searchString {
+    self = [super init];
+    if (self) {
+        _searchString = searchString;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
@@ -40,14 +47,9 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     [self prepareUI];
     
     self.networkService = [NetworkService new];
-    self.networkService.viewController = self;
     self.networkService.output = self;
-    self.photosArray = [NSMutableArray new];
-    
-    if (!self.searchString && ![self.searchString isEqual: @"Sunset"]) {
-        self.searchString = @"Sunset";
-    }
     [self.networkService findFlickrPhotoWithSearchString:self.searchString];
+    self.photosArray = [NSMutableArray new];
     [self addCustomCategories];
 }
 
@@ -78,7 +80,8 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     NSLog(@"%@", searchBar.text);
     [self.photosArray removeAllObjects];
-    [self.networkService findFlickrPhotoWithSearchString: searchBar.text];
+    self.searchString = searchBar.text;
+    [self.networkService findFlickrPhotoWithSearchString: self.searchString];
 }
 
 #pragma mark - UICollectionView delegate
@@ -105,6 +108,8 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     [self.navigationController pushViewController:editPhotoViewController animated:YES];
 }
 
+#pragma mark - NSURL
+
 - (void)loadingIsDoneWithDataRecieved:(NSData *)dataRecieved {
     UIImage *image = [UIImage imageWithData:dataRecieved];
     if (image) {
@@ -113,16 +118,18 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     }
 }
 
+#pragma mark - Notifications
+
 -(void)scheduleLocalNotification {
     UNMutableNotificationContent *contentDog = [UNMutableNotificationContent new];
     contentDog.title = @"\U0001F436 Flickr \U0001F436";
-    contentDog.body = @"Вы давно не заходили к нам! Посмотрите на собачек! \U0001F436";
+    contentDog.body = @"Вы давно не заходили к нам! Посмотрите на собачек!";
     contentDog.sound = [UNNotificationSound defaultSound];
     contentDog.badge = @([self giveNewBadgeNumber] + 1);
     
     UNMutableNotificationContent *contentCat = [UNMutableNotificationContent new];
     contentCat.title = @"\U0001F431 Flickr \U0001F431";
-    contentCat.body = @"Вы давно не заходили к нам! Посмотрите на котят! \U0001F431";
+    contentCat.body = @"Вы давно не заходили к нам! Посмотрите на котят!";
     contentCat.sound = [UNNotificationSound defaultSound];
     contentCat.badge = @([self giveNewBadgeNumber] + 1);
     
@@ -131,7 +138,7 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
         contentDog.attachments = @[attachmentDog];
     }
     
-    UNNotificationAttachment *attachmentCat = [self imageAttachment];
+    UNNotificationAttachment *attachmentCat = [self imageAttachmentSecond];
     if (attachmentCat) {
         contentCat.attachments = @[attachmentCat];
     }
@@ -139,15 +146,18 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     contentDog.categoryIdentifier = @"LCTReminderCategory";
     contentCat.categoryIdentifier = @"LCTReminderCategorySecond";
     
-    NSDictionary *dict = @{@"color": @"red"};
+    NSDictionary *dict = @{@"search": self.searchString};
     contentDog.userInfo = dict;
+    
+    NSDictionary *dictSecond = @{@"search": @"Cat"};
+    contentCat.userInfo = dictSecond;
     
     
     NSString *identifier = @"NotificationId";
     NSString *identifierSecond = @"NotificationIdSecond";
     UNNotificationTrigger *trigger = [self triggerWithType:LCTTriggerTypeInterval];
     
-    UNNotificationTrigger *triggerSecond = [self triggerWithType:LCTTriggerTypeLocation];
+    UNNotificationTrigger *triggerSecond = [self triggerWithType:LCTTriggerTypeDate];
     
     UNNotificationRequest *requestDog = [UNNotificationRequest requestWithIdentifier:identifier content:contentDog trigger:trigger];
     UNNotificationRequest *requestCat = [UNNotificationRequest requestWithIdentifier:identifierSecond content:contentCat trigger:triggerSecond];
@@ -173,12 +183,6 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:10 repeats:NO];
 }
 
--(UNLocationNotificationTrigger*) locationTrigger {
-    //    CLRegion *region
-    //    return [UNLocationNotificationTrigger triggerWithRegion:<#(nonnull CLRegion *)#> repeats:NO];
-    return nil;
-}
-
 -(UNCalendarNotificationTrigger*) dateTrigger {
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:3600];
     NSDateComponents *triggerDate = [[NSCalendar currentCalendar] components:NSCalendarUnitYear + NSCalendarUnitMonth + NSCalendarUnitDay + NSCalendarUnitHour + NSCalendarUnitMinute + NSCalendarUnitSecond fromDate:date];
@@ -193,10 +197,8 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     switch(triggerType) {
         case LCTTriggerTypeInterval:
             return [self intervalTrigger];
-        case LCTTriggerTypeLocation:
-            return [self intervalTriggerSecond];
         case LCTTriggerTypeDate:
-            return [self dateTrigger];
+            return [self intervalTriggerSecond];
         default:
             break;
     }
@@ -205,6 +207,14 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 
 -(UNNotificationAttachment *)imageAttachment {
     NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"dog" withExtension:@"jpg"];
+    NSError *error;
+    UNNotificationAttachment *attachment = [UNNotificationAttachment attachmentWithIdentifier:@"pushImages" URL:fileURL options:nil error:&error];
+    
+    return attachment;
+}
+
+-(UNNotificationAttachment *)imageAttachmentSecond {
+    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"cat" withExtension:@"jpg"];
     NSError *error;
     UNNotificationAttachment *attachment = [UNNotificationAttachment attachmentWithIdentifier:@"pushImages" URL:fileURL options:nil error:&error];
     

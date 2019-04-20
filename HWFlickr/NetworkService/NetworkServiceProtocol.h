@@ -7,7 +7,15 @@
 //
 
 @protocol NetworkServiceOutputProtocol <NSObject>
+@optional
 
-- (void)loadingIsDoneWithDataRecieved:(NSData *)dataRecieved;
+-(void)loadingIsDoneWithDataRecieved:(NSData *)dataRecieved;
+
+@end
+
+@protocol NetworkServiceInputProtocol <NSObject>
+@optional
+
+-(void)findFlickrPhotoWithSearchString: (NSString *)searchString;
 
 @end

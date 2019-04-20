@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate>
 
 @property (nonatomic, strong) NSString *searchString;
 
+-(instancetype)initWithSearchString: (NSString *)searchString;
 -(void)scheduleLocalNotification;
 
 @end

@@ -14,13 +14,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NetworkService : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
+@interface NetworkService : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NetworkServiceInputProtocol>
 
 @property (nonatomic, weak) id<NetworkServiceOutputProtocol> output; /**< Делегат внешних событий */
-@property (nonatomic, strong) ViewController *viewController;
-
--(void)findFlickrPhotoWithSearchString: (NSString *)searchString;
-
 
 @end
 

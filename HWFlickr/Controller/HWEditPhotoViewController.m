@@ -11,6 +11,7 @@
 @interface HWEditPhotoViewController ()
 
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UILabel *labelSepiaTone;
 @property (nonatomic, strong) UISlider *sliderSepiaTone;
 @property (nonatomic, strong) UILabel *labelColorControlsTone;

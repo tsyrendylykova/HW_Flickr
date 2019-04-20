@@ -12,8 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, strong, readwrite) UIImageView *coverImageView;
-@property (nonatomic, strong) UILabel* titleLabel;
+-(instancetype)initWithFrame:(CGRect)frame;
+
+@property (nonatomic, strong) UIImageView *coverImageView;
 
 @end
 

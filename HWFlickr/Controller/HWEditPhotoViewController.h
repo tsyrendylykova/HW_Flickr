@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(instancetype)initWithImage: (UIImage *)image;
 
-@property(nonatomic, strong) UIImage *image;
-
 @end
 
 NS_ASSUME_NONNULL_END
