@@ -114,30 +114,51 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 }
 
 -(void)scheduleLocalNotification {
-    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
-    content.title = @"Flickr";
-    content.body = @"Вы давно не заходили к нам! Посмотрите на собачек! \U0001F47B \U0001F431";
-    content.sound = [UNNotificationSound defaultSound];
+    UNMutableNotificationContent *contentDog = [UNMutableNotificationContent new];
+    contentDog.title = @"\U0001F436 Flickr \U0001F436";
+    contentDog.body = @"Вы давно не заходили к нам! Посмотрите на собачек! \U0001F436";
+    contentDog.sound = [UNNotificationSound defaultSound];
+    contentDog.badge = @([self giveNewBadgeNumber] + 1);
     
-    content.badge = @([self giveNewBadgeNumber] + 1);
+    UNMutableNotificationContent *contentCat = [UNMutableNotificationContent new];
+    contentCat.title = @"\U0001F431 Flickr \U0001F431";
+    contentCat.body = @"Вы давно не заходили к нам! Посмотрите на котят! \U0001F431";
+    contentCat.sound = [UNNotificationSound defaultSound];
+    contentCat.badge = @([self giveNewBadgeNumber] + 1);
     
-    UNNotificationAttachment *attachment = [self imageAttachment];
-    if (attachment) {
-        content.attachments = @[attachment];
+    UNNotificationAttachment *attachmentDog = [self imageAttachment];
+    if (attachmentDog) {
+        contentDog.attachments = @[attachmentDog];
     }
     
-    content.categoryIdentifier = @"LCTReminderCategory";
+    UNNotificationAttachment *attachmentCat = [self imageAttachment];
+    if (attachmentCat) {
+        contentCat.attachments = @[attachmentCat];
+    }
+    
+    contentDog.categoryIdentifier = @"LCTReminderCategory";
+    contentCat.categoryIdentifier = @"LCTReminderCategorySecond";
     
     NSDictionary *dict = @{@"color": @"red"};
-    content.userInfo = dict;
+    contentDog.userInfo = dict;
     
     
     NSString *identifier = @"NotificationId";
+    NSString *identifierSecond = @"NotificationIdSecond";
     UNNotificationTrigger *trigger = [self triggerWithType:LCTTriggerTypeInterval];
-    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
+    
+    UNNotificationTrigger *triggerSecond = [self triggerWithType:LCTTriggerTypeLocation];
+    
+    UNNotificationRequest *requestDog = [UNNotificationRequest requestWithIdentifier:identifier content:contentDog trigger:trigger];
+    UNNotificationRequest *requestCat = [UNNotificationRequest requestWithIdentifier:identifierSecond content:contentCat trigger:triggerSecond];
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+    [center addNotificationRequest:requestDog withCompletionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Something goes wrong");
+        }
+    }];
+    [center addNotificationRequest:requestCat withCompletionHandler:^(NSError * _Nullable error) {
         if (error) {
             NSLog(@"Something goes wrong");
         }
@@ -145,7 +166,11 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 }
 
 -(UNTimeIntervalNotificationTrigger*) intervalTrigger {
-    return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:30 repeats:NO];
+    return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:5 repeats:NO];
+}
+
+-(UNTimeIntervalNotificationTrigger*) intervalTriggerSecond {
+    return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:10 repeats:NO];
 }
 
 -(UNLocationNotificationTrigger*) locationTrigger {
@@ -155,7 +180,7 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
 }
 
 -(UNCalendarNotificationTrigger*) dateTrigger {
-    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:360];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:3600];
     NSDateComponents *triggerDate = [[NSCalendar currentCalendar] components:NSCalendarUnitYear + NSCalendarUnitMonth + NSCalendarUnitDay + NSCalendarUnitHour + NSCalendarUnitMinute + NSCalendarUnitSecond fromDate:date];
     return [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:NO];
 }
@@ -169,7 +194,7 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
         case LCTTriggerTypeInterval:
             return [self intervalTrigger];
         case LCTTriggerTypeLocation:
-            return [self locationTrigger];
+            return [self intervalTriggerSecond];
         case LCTTriggerTypeDate:
             return [self dateTrigger];
         default:
@@ -192,6 +217,9 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     
     UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:@"LCTReminderCategory" actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
     NSSet *categories = [NSSet setWithObject:category];
+    
+    UNNotificationCategory *categorySecond = [UNNotificationCategory categoryWithIdentifier:@"LCTReminderCategorySecond" actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
+    [categories setByAddingObject:categorySecond];
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center setNotificationCategories:categories];
