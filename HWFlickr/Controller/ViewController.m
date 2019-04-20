@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     self.networkService.output = self;
     [self.networkService findFlickrPhotoWithSearchString:self.searchString];
     self.photosArray = [NSMutableArray new];
-    [self addCustomCategories];
+    [self addCustomCategoriesWithIdentifier:@"ReminderCategoryLastSearch" andIdentifier:@"ReminderCategoryCatSearch"];
 }
 
 -(void)prepareUI {
@@ -133,18 +133,18 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     contentCat.sound = [UNNotificationSound defaultSound];
     contentCat.badge = @([self giveNewBadgeNumber] + 1);
     
-    UNNotificationAttachment *attachmentDog = [self imageAttachment];
+    UNNotificationAttachment *attachmentDog = [self imageAttachmentWithName:@"dog"];
     if (attachmentDog) {
         contentDog.attachments = @[attachmentDog];
     }
     
-    UNNotificationAttachment *attachmentCat = [self imageAttachmentSecond];
+    UNNotificationAttachment *attachmentCat = [self imageAttachmentWithName:@"cat"];
     if (attachmentCat) {
         contentCat.attachments = @[attachmentCat];
     }
     
-    contentDog.categoryIdentifier = @"LCTReminderCategory";
-    contentCat.categoryIdentifier = @"LCTReminderCategorySecond";
+    contentDog.categoryIdentifier = @"ReminderCategoryLastSearch";
+    contentCat.categoryIdentifier = @"ReminderCategoryCatSearch";
     
     NSDictionary *dict = @{@"search": self.searchString};
     contentDog.userInfo = dict;
@@ -153,14 +153,14 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     contentCat.userInfo = dictSecond;
     
     
-    NSString *identifier = @"NotificationId";
-    NSString *identifierSecond = @"NotificationIdSecond";
-    UNNotificationTrigger *trigger = [self triggerWithType:LCTTriggerTypeInterval];
+    NSString *identifierDog = @"NotificationDog";
+    NSString *identifierCat = @"NotificationCat";
+    UNNotificationTrigger *triggerDog = [self triggerWithType:LCTTriggerTypeInterval];
     
-    UNNotificationTrigger *triggerSecond = [self triggerWithType:LCTTriggerTypeDate];
+    UNNotificationTrigger *triggerCat = [self triggerWithType:LCTTriggerTypeDate];
     
-    UNNotificationRequest *requestDog = [UNNotificationRequest requestWithIdentifier:identifier content:contentDog trigger:trigger];
-    UNNotificationRequest *requestCat = [UNNotificationRequest requestWithIdentifier:identifierSecond content:contentCat trigger:triggerSecond];
+    UNNotificationRequest *requestDog = [UNNotificationRequest requestWithIdentifier:identifierDog content:contentDog trigger:triggerDog];
+    UNNotificationRequest *requestCat = [UNNotificationRequest requestWithIdentifier:identifierCat content:contentCat trigger:triggerCat];
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     [center addNotificationRequest:requestDog withCompletionHandler:^(NSError * _Nullable error) {
@@ -179,12 +179,8 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:5 repeats:NO];
 }
 
--(UNTimeIntervalNotificationTrigger*) intervalTriggerSecond {
-    return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:10 repeats:NO];
-}
-
 -(UNCalendarNotificationTrigger*) dateTrigger {
-    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:3600];
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:10];
     NSDateComponents *triggerDate = [[NSCalendar currentCalendar] components:NSCalendarUnitYear + NSCalendarUnitMonth + NSCalendarUnitDay + NSCalendarUnitHour + NSCalendarUnitMinute + NSCalendarUnitSecond fromDate:date];
     return [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:NO];
 }
@@ -198,37 +194,29 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
         case LCTTriggerTypeInterval:
             return [self intervalTrigger];
         case LCTTriggerTypeDate:
-            return [self intervalTriggerSecond];
+            return [self dateTrigger];
         default:
             break;
     }
     return nil;
 }
 
--(UNNotificationAttachment *)imageAttachment {
-    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"dog" withExtension:@"jpg"];
+-(UNNotificationAttachment *)imageAttachmentWithName: (NSString *)name  {
+    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:name withExtension:@"jpg"];
     NSError *error;
     UNNotificationAttachment *attachment = [UNNotificationAttachment attachmentWithIdentifier:@"pushImages" URL:fileURL options:nil error:&error];
     
     return attachment;
 }
 
--(UNNotificationAttachment *)imageAttachmentSecond {
-    NSURL *fileURL = [[NSBundle mainBundle] URLForResource:@"cat" withExtension:@"jpg"];
-    NSError *error;
-    UNNotificationAttachment *attachment = [UNNotificationAttachment attachmentWithIdentifier:@"pushImages" URL:fileURL options:nil error:&error];
-    
-    return attachment;
-}
-
--(void)addCustomCategories {
+-(void)addCustomCategoriesWithIdentifier: (NSString *)identifier andIdentifier:(NSString *)secondIdentifier {
     UNNotificationAction *checkAction = [UNNotificationAction actionWithIdentifier:@"checkID" title:@"i am title" options:UNNotificationActionOptionNone];
     UNNotificationAction *deleteAction = [UNNotificationAction actionWithIdentifier:@"deleteID" title:@"delete" options:UNNotificationActionOptionDestructive];
     
-    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:@"LCTReminderCategory" actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
+    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:identifier actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
     NSSet *categories = [NSSet setWithObject:category];
     
-    UNNotificationCategory *categorySecond = [UNNotificationCategory categoryWithIdentifier:@"LCTReminderCategorySecond" actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
+    UNNotificationCategory *categorySecond = [UNNotificationCategory categoryWithIdentifier:secondIdentifier actions:@[checkAction, deleteAction] intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
     [categories setByAddingObject:categorySecond];
     
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
