@@ -58,6 +58,7 @@ typedef NS_ENUM(NSInteger, LCTTriggerType) {
     self.navigationItem.title = @"Flickr search";
     
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 88, self.view.frame.size.width, 50)];
+    self.searchBar.placeholder = self.searchString;
     self.searchBar.delegate = self;
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
